@@ -1,0 +1,29 @@
+name: Check test CI/CD pipeline
+on:
+    push:
+        branches:
+            - main
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/chceckout@v4
+
+            - name: setup node js
+              uses: actions/setup-node@v4
+              with:
+                node-version: '20'
+            
+            - name: Install dependencies
+              run: npm ci
+              
+            - name: Run app build
+              run: npm run build
+              
+              
+
+
+
+    
