@@ -31,6 +31,9 @@ jobs:
         needs: Integration-check
         runs-on: ubuntu-latest
         steps:
+        - name: Checkout to the repo
+          uses: actions/checkout@v4
+          
         - name: List files in repo
           run: ls -la
         - name: Install the docker here
