@@ -59,7 +59,7 @@ jobs:
             script: |
                 docker stop myapp || true
                 docker rmi myapp || true
-                docker pull myapp
+                docker pull zenzarun/myapp
                 docker run -d -p 3000:3000 --name myapp-container myapp
             
 
