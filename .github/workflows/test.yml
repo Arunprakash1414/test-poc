@@ -54,7 +54,7 @@ jobs:
           uses: appleboy/ssh-action@v1
           with:
             host: "${{secrets.HOST}}"
-            name: "root"
+            username: "root"
             key: "${{secrets.SERVER_PASSWORD}}"
             script: |
                 docker stop myapp || true
