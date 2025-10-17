@@ -56,7 +56,7 @@ jobs:
             host: "${{secrets.HOST}}"
             name: "root"
             key: "${{secrets.SERVER_PASSWORD}}"
-            scripts: |
+            script: |
                 docker stop myapp || true
                 docker rmi myapp || true
                 docker pull myapp
