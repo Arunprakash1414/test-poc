@@ -50,7 +50,7 @@ jobs:
             docker tag myapp zenzarun/myapp:latest
             docker push zenzarun/myapp
         
-        - name: Login to hetzener Deploy the latest push from the docker hub
+        - name: Login to hetzner Deploy the latest push from the docker hub
           uses: appleboy/ssh-action@v1
           with:
             host: "${{secrets.HOST}}"
