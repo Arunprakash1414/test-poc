@@ -58,12 +58,10 @@ jobs:
             key: "${{secrets.SERVER_PASSWORD}}"
             script: |
                 docker stop myapp-container || true
+                docker rm myapp-container || true
                 docker rmi zenzarun/myapp || true
                 docker pull zenzarun/myapp
                 docker run -d -p 3000:3000 --name myapp-container zenzarun/myapp
-            
-
-            
           
 
         
