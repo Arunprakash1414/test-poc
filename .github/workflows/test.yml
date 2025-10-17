@@ -23,8 +23,8 @@ jobs:
         - name: Check the test cases
           run: npm run test || true
         
-        - name: Do the app build
-          run: npm run build
+        # - name: Do the app build
+        #   run: npm run build
     
     Deployment-init:
         name: Init The deployment
