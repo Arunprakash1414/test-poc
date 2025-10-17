@@ -33,7 +33,7 @@ jobs:
         steps:
         - name: Checkout to the repo
           uses: actions/checkout@v4
-          
+
         - name: List files in repo
           run: ls -la
         - name: Install the docker here
@@ -47,7 +47,7 @@ jobs:
 
         - name: Tag and push the docker image to the docker hub
           run: | 
-            docker tag myapp zenzarun/myapp@latest
+            docker tag myapp zenzarun/myapp:latest
             docker push zenzarun/myapp
         
         - name: Login to hetzener Deploy the latest push from the docker hub
