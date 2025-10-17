@@ -1,42 +1,71 @@
-name: test-ci-cd-pipeline
+name: CI-CD pipeline execution
 on:
     push:
         branches:
             - main
 jobs:
-    check-ci:
-        name: Check Continuous integration
+    Integration-check:
+        name: check the integration level
         runs-on: ubuntu-latest
-
+        
         steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            
-            - name: Install node js
-              uses: actions/setup-node@v4
-              with:
-                node-version: 18
-            - name: Install dependencies
-              run: npm ci
+        - name: Checkout the repo
+          uses: actions/checkout@v4
+        
+        - name: Install node Js
+          uses: actions/setup-node@v4
+          with:
+            node-version: 20
 
-            - name: Take build
-              run: npm run build
-
-            - name: Run tests
-              run: npm run test || echo "No test cases found"
-    build-images:
-        name: build docker image now
-        needs: check-ci
+        - name: Install all dependencies
+          run: npm ci
+        
+        - name: Check the test cases
+          run: npm run test || true
+        
+        - name: Do the app build
+          run: npm run build
+    
+    Deployment-init:
+        name: Init The deployment
+        needs: Integration-check
         runs-on: ubuntu-latest
-
         steps:
-            - name: checkout
-              uses: actions/checkout@v4
-            
-            - name: create docker image here
-              run: |
-                docker build -t ci-cd-poc-test .
+        - name: Install the docker here
+          uses: docker/setup-docker@v3
+        
+        - name: Build the image
+          run: docker build -t myapp .
+        
+        - name: Login to Docker
+          run: echo "${{secrets.DOCKER_TOKEN}}" | docker login -u ${{secrets.DOCKER_USERNAME}} --password-stdin
 
-              
+        - name: Tag and push the docker image to the docker hub
+          run: | 
+            docker tag myapp zenzarun/myapp@latest
+            docker push zenzarun/myapp
+        
+        - name: Login to hetzener Deploy the latest push from the docker hub
+          uses: appleboy/ssh-action@v1
+          with:
+            host: "${{secrets.HOST}}"
+            name: "root"
+            key: "${{secrets.SERVER_PASSWORD}}"
+            scripts: |
+                docker stop myapp || true
+                docker rmi myapp || true
+                docker pull myapp
+                docker run -d -p 3000:3000 --name myapp-container myapp
+            
 
             
+          
+
+        
+        
+        
+    
+
+        
+        
+        
