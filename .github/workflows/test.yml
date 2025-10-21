@@ -24,5 +24,18 @@ jobs:
       
       - name: Run the test cases
         run: npm run test || true
+  ci-deployment:
+    needs: ci-integration
+    runs-on: ubuntu-latest
+    
+    steps:
+        - name: checkout to the code
+          uses: actions/checkout@v4
+        
+        - name: install docker
+          uses: docker/setup-docker@v4
+        
+        - name: build an image
+          run: docker build -t zenzarun/myapp .
 
-      
+
