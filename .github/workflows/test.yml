@@ -1,74 +1,28 @@
 name: CI-CD pipeline execution
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 jobs:
-    Integration-check:
-        name: check the integration level
-        runs-on: ubuntu-latest
-        
-        steps:
-        - name: Checkout the repo
-          uses: actions/checkout@v4
-        
-        - name: Install node Js
-          uses: actions/setup-node@v4
-          with:
-            node-version: 20
-
-        - name: Install all dependencies
-          run: npm ci
-        
-        - name: Check the test cases
-          run: npm run test || true
-        
-        # - name: Do the app build
-        #   run: npm run build
+  ci-integration:
+    runs-on: ubuntu-latest
     
-    Deployment-init:
-        name: Init The deployment
-        needs: Integration-check
-        runs-on: ubuntu-latest
-        steps:
-        - name: Checkout to the repo
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout to the code
+        uses: actions/checkout@v4
+      
+      - name: install node js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run the application build
+        uses: npm run build
+      
+      - name: Run the test cases
+        uses: npm run test
 
-        - name: List files in repo
-          run: ls -la
-        - name: Install the docker here
-          uses: docker/setup-buildx-action@v3
-        
-        - name: Build the image
-          run: docker build -t myapp .
-        
-        - name: Login to Docker
-          run: echo "${{secrets.DOCKER_TOKEN}}" | docker login -u ${{secrets.DOCKER_USERNAME}} --password-stdin
-
-        - name: Tag and push the docker image to the docker hub
-          run: | 
-            docker tag myapp zenzarun/myapp:latest
-            docker push zenzarun/myapp
-        
-        - name: Login to hetzner Deploy the latest push from the docker hub
-          uses: appleboy/ssh-action@v1
-          with:
-            host: "${{secrets.HOST}}"
-            username: "root"
-            key: "${{secrets.SERVER_PASSWORD}}"
-            script: |
-                docker stop myapp-container || true
-                docker rm myapp-container || true
-                docker rmi zenzarun/myapp || true
-                docker pull zenzarun/myapp
-                docker run -d -p 3000:3000 --name myapp-container zenzarun/myapp
-          
-
-        
-        
-        
-    
-
-        
-        
-        
+      
