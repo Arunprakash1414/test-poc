@@ -20,9 +20,9 @@ jobs:
         run: npm ci
       
       - name: Run the application build
-        uses: npm run build || true
+        run: npm run build || true
       
       - name: Run the test cases
-        uses: npm run test || true
+        run: npm run test || true
 
       
